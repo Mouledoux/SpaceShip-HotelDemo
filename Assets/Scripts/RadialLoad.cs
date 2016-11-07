@@ -14,14 +14,14 @@ using System.Collections;
 public class RadialLoad : MonoBehaviour
 {
     #region Variables
+    [SerializeField] private Image progressCircle;  // Load image
+    [SerializeField] private Gradient loadGradient; // Gradient over time for load
+    [SerializeField] private float timeToPlay = 3f; // Seconds to complete load
+    public bool isLoading = false;                  // Bool for current state of loading
+
+    [SerializeField] GameObject room;
     [SerializeField]
-    private Image progressCircle;  // Load image
-    [SerializeField]
-    private float timeToPlay = 3f; // Seconds to complete load
-    //[SerializeField] private float timeToLoad;// Time till load
-    [SerializeField]
-    private Gradient loadGradient; // Gradient over time for load
-    public bool isLoading = false;                  // Bool for current state of loading 
+    GameObject eye;
     #endregion
 
     // MonoBehaviour ///////////////////////////////////////////////////////////////////////////////////
@@ -40,13 +40,13 @@ public class RadialLoad : MonoBehaviour
         isLoading = false;
     }
 
-    public void LoadTarget(int vidIndex)  //
+    public void LoadTarget(Vector3 pos)  //
     {
         isLoading = true;
-        StartCoroutine(LoadCircle(vidIndex));
+        StartCoroutine(LoadCircle(pos));
     }
 
-    IEnumerator LoadCircle(int index)    // Load coroutine
+    IEnumerator LoadCircle(Vector3 pos)    // Load coroutine
     {
         bool startLoad = false;
         float timer = 0;
@@ -59,7 +59,6 @@ public class RadialLoad : MonoBehaviour
             if (timer >= (timeToPlay / 2) && !startLoad)
             {
                 startLoad = true;
-                // call load at index
             }
 
             yield return null;
@@ -67,16 +66,8 @@ public class RadialLoad : MonoBehaviour
 
         if (isLoading)
         {
-            //if (index != -1)
-                //vm.StopCurrentAndPlayAt(index);
-
-           // else    // index -1 denotes selection intended to be used to open webpage
-                //Application.OpenURL("http://www.tantrumlab.com/");
-        }
-
-        else
-        {
-            // Unload at index
+            Vector3 adjust = new Vector3 (eye.transform.localPosition.x, 0, eye.transform.localPosition.z);
+            room.transform.position = pos - adjust;
         }
 
         progressCircle.fillAmount = 0;   // Reset
